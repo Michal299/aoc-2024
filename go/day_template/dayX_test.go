@@ -6,9 +6,11 @@ import (
 	"testing"
 )
 
-func TestPartX(t *testing.T) {
+var resources = "../../resources/"
+
+func TestPart1(t *testing.T) {
 	t.Run("example", func(t *testing.T) {
-		input := utils.ReadInput("../resources/dayX/partX_example.txt")
+		input := utils.ReadInput(resources + "dayX/partX_example.txt")
 		got := Part1(input)
 		want := 0
 
@@ -18,7 +20,7 @@ func TestPartX(t *testing.T) {
 	})
 
 	t.Run("actual", func(t *testing.T) {
-		input := utils.ReadInput("../resources/dayX/partX.txt")
+		input := utils.ReadInput(resources + "dayX/partX.txt")
 		got := Part1(input)
 		log.Printf("PartX - got: %d\n", got)
 	})

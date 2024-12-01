@@ -15,3 +15,16 @@ func Map[T, R any](collection []T, mapping func(value T) R) (mapped []R) {
 	}
 	return
 }
+
+func GroupBy[T any, K comparable](values []T, keyFunc func(value T) (key K)) (result map[K][]T) {
+	result = make(map[K][]T)
+	for _, value := range values {
+		key := keyFunc(value)
+		result[key] = append(result[key], value)
+	}
+	return
+}
+
+func Identity[T any](v T) T {
+	return v
+}

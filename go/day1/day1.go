@@ -30,12 +30,15 @@ func Part2(input []string) int {
 	rightAsInts := utils.Map(right, mapToInt)
 
 	similarityScore := 0
-	for _, elem := range leftAsInts {
-		matching := utils.Filter(rightAsInts, func(x int) bool {
-			return x == elem
-		})
 
-		similarityScore += elem * len(matching)
+	groupedSecondColumns := utils.GroupBy(rightAsInts, utils.Identity)
+
+	for _, elem := range leftAsInts {
+		localSimilarity := 0
+		if groupedSecondColumns[elem] != nil {
+			localSimilarity = len(groupedSecondColumns[elem]) * elem
+		}
+		similarityScore += localSimilarity
 	}
 	return similarityScore
 }

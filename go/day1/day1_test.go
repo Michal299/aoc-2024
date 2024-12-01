@@ -6,9 +6,11 @@ import (
 	"testing"
 )
 
+var resources = "../../resources/"
+
 func TestPart1(t *testing.T) {
 	t.Run("example", func(t *testing.T) {
-		input := utils.ReadInput("../resources/day1/part1_example.txt")
+		input := utils.ReadInput(resources + "day1/part1_example.txt")
 		got := Part1(input)
 		want := 11
 
@@ -18,7 +20,7 @@ func TestPart1(t *testing.T) {
 	})
 
 	t.Run("actual", func(t *testing.T) {
-		input := utils.ReadInput("../resources/day1/part1.txt")
+		input := utils.ReadInput(resources + "day1/part1.txt")
 		got := Part1(input)
 		log.Printf("Part1 - got: %d\n", got)
 	})
@@ -26,7 +28,7 @@ func TestPart1(t *testing.T) {
 
 func TestPart2(t *testing.T) {
 	t.Run("example", func(t *testing.T) {
-		input := utils.ReadInput("../resources/day1/part1_example.txt")
+		input := utils.ReadInput(resources + "day1/part1_example.txt")
 		got := Part2(input)
 		want := 31
 
@@ -36,7 +38,7 @@ func TestPart2(t *testing.T) {
 	})
 
 	t.Run("actual", func(t *testing.T) {
-		input := utils.ReadInput("../resources/day1/part1.txt")
+		input := utils.ReadInput(resources + "day1/part1.txt")
 		got := Part2(input)
 		log.Printf("Part2 - got: %d\n", got)
 	})
