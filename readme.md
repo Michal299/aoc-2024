@@ -13,7 +13,7 @@ I will try avoid writing Kotlin in GoLang by reading the discussions and other G
 |          | **GoLang**           | **Kotlin**          |
 |:--------:|:--------------------:|:-------------------:|
 | **Day1** | 2/2 :evergreen_tree: | 2/2 :evergreen_tree:|
-| **Day2** |                      |                     |
+| **Day2** | 2/2 :evergreen_tree: |                     |
 | **Day3** |                      |                     |
 | **Day4** |                      |                     |
 | **Day5** |                      |                     |
