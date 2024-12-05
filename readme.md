@@ -16,7 +16,7 @@ I will try avoid writing Kotlin in GoLang by reading the discussions and other G
 | **Day2** | 2/2 :evergreen_tree: | skip                |
 | **Day3** | 2/2 :evergreen_tree: | skip                |
 | **Day4** | 2/2 :evergreen_tree: | skip                |
-| **Day5** |                      |                     |
+| **Day5** | 2/2 :evergreen_tree: | skip                |
 | **Day6** |                      |                     |
 | **Day7** |                      |                     |
 | **Day8** |                      |                     |
