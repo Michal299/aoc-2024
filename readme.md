@@ -7,7 +7,7 @@ Main focus will be on this language, to learn it, explore and see all the pros a
 
 In the same time, I will have a Kotlin as a secondary option. This one I will use when I will have very little time given day,
 but still wanting to solve the puzzle. Sometimes I will also solve given puzzle in both languages, because why not? However, 
-I will try avoid writing Kotlin in GoLang by reading the discussions and other Go programmers solutions once I will solve given day.
+I will try to avoid writing Kotlin in GoLang by reading the discussions and other Go programmers solutions once I will solve given day.
 
 ## Solution log
 |          | **GoLang**           | **Kotlin**          |
