@@ -1,6 +1,7 @@
 package day9
 
 import (
+	"container/list"
 	"strconv"
 	"strings"
 )
@@ -19,20 +20,17 @@ type block struct {
 }
 
 type position struct {
-	blockIndex      int
+	block           *list.Element
 	positionInBlock int
 }
 
 type filesystem struct {
-	front          position
-	tail           position
-	representation []block
-	absoluteId     int
+	representation *list.List
 }
 
 func parseFilesystem(input string) (fs filesystem) {
 	elems := strings.Split(input, "")
-	var representations []block
+	representations := list.New()
 	blockId := 0
 	for i, elem := range elems {
 		num, _ := strconv.Atoi(elem)
@@ -47,80 +45,97 @@ func parseFilesystem(input string) (fs filesystem) {
 			b.id = -1
 			b.bt = EMPTY
 		}
-		representations = append(representations, b)
-
+		if b.length <= 0 {
+			continue
+		}
+		representations.PushBack(b)
 	}
+
 	fs.representation = representations
-	fs.front = position{blockIndex: 0, positionInBlock: 0}
-	fs.tail = position{blockIndex: len(representations) - 1, positionInBlock: fs.representation[len(representations)-1].length - 1}
-	fs.absoluteId = 0
 	return
 }
 
-func (f *filesystem) isEof() bool {
-	if f.front.blockIndex == f.tail.blockIndex {
-		return f.front.positionInBlock > f.tail.positionInBlock
-	}
-	return f.front.blockIndex > f.tail.blockIndex
-}
-
-func (f *filesystem) getFrontBlock() block {
-	frontBlock := f.representation[f.front.blockIndex]
-	if f.front.positionInBlock >= frontBlock.length {
-		f.front.blockIndex++
-		for f.representation[f.front.blockIndex].bt == EMPTY && f.representation[f.front.blockIndex].length == 0 {
-			f.front.blockIndex++
-		}
-		f.front.positionInBlock = 0
-		frontBlock = f.representation[f.front.blockIndex]
-	}
-	return frontBlock
-}
-
-func (f *filesystem) getNextPosition() (pos, fileId int) {
-	frontBlock := f.getFrontBlock()
-	tailBlock := f.getTailBlock()
-
-	pos = f.absoluteId
-	f.absoluteId++
-
-	switch frontBlock.bt {
-	case FILE:
-		fileId = frontBlock.id
-	case EMPTY:
-		fileId = tailBlock.id
-		f.tail.positionInBlock--
-	}
-	f.front.positionInBlock++
+func splitBlock(size int, b block) (main, remaining block) {
+	main = block{id: b.id, length: size, bt: b.bt}
+	remaining = block{id: b.id, length: b.length - size, bt: b.bt}
 	return
 }
 
-func (f *filesystem) getTailBlock() block {
-	tailBlock := f.representation[f.tail.blockIndex]
-	if f.tail.positionInBlock < 0 {
-		f.tail.blockIndex--
-		for f.representation[f.tail.blockIndex].bt != FILE {
-			f.tail.blockIndex--
+func (f *filesystem) fillBlockFromEnd(toFill *list.Element) {
+	beforeToFill := toFill.Prev()
+	f.representation.Remove(toFill)
+
+	for toFill != nil {
+		spaceDifference := toFill.Value.(block).length - f.representation.Back().Value.(block).length
+		var filler block
+		if spaceDifference == 0 {
+			fillerElem := f.representation.Back()
+			f.representation.Remove(fillerElem)
+			filler = fillerElem.Value.(block)
+			toFill = nil
+			beforeToFill = f.representation.InsertAfter(filler, beforeToFill)
+		} else if spaceDifference < 0 {
+			end := f.representation.Back()
+			f.representation.Remove(end)
+			var remaining block
+			filler, remaining = splitBlock(toFill.Value.(block).length, end.Value.(block))
+			f.representation.PushBack(remaining)
+			toFill = nil
+			beforeToFill = f.representation.InsertAfter(filler, beforeToFill)
+		} else if spaceDifference > 0 {
+			fillerElem := f.representation.Back()
+			f.representation.Remove(fillerElem)
+			filler = fillerElem.Value.(block)
+			remainingFreeBlock := block{id: toFill.Value.(block).id, bt: EMPTY, length: spaceDifference}
+			beforeToFill = f.representation.InsertAfter(filler, beforeToFill)
+			toFill = f.representation.InsertAfter(remainingFreeBlock, beforeToFill)
 		}
-		tailBlock = f.representation[f.tail.blockIndex]
-		f.tail.positionInBlock = tailBlock.length - 1
 	}
-	return tailBlock
+}
+
+func (f *filesystem) fragmentation() {
+	currentFront := f.representation.Front()
+
+	for currentFront != nil {
+		if currentFront.Value.(block).bt == FILE {
+			currentFront = currentFront.Next()
+			continue
+		}
+
+		toFill := currentFront
+		currentFront = toFill.Next()
+		f.fillBlockFromEnd(toFill)
+	}
+}
+
+func (f *filesystem) fragmentation2() {
+
 }
 
 func (f *filesystem) checksum() (s int) {
-	for !f.isEof() {
-		pos, id := f.getNextPosition()
-		s += pos * id
+	currentPosition := position{block: f.representation.Front(), positionInBlock: 0}
+	for i := 0; true; i++ {
+		if currentPosition.positionInBlock > currentPosition.block.Value.(block).length {
+			nextBlock := currentPosition.block.Next()
+			if nextBlock == nil {
+				break
+			}
+			currentPosition.block = nextBlock
+			currentPosition.positionInBlock = 0
+		}
+		s += currentPosition.block.Value.(block).id * i
 	}
-	return
+	return 0
 }
 
 func Part1(input []string) int {
 	fs := parseFilesystem(input[0])
+	fs.fragmentation()
 	return fs.checksum()
 }
 
 func Part2(input []string) int {
-	return 0
+	fs := parseFilesystem(input[0])
+	fs.fragmentation2()
+	return fs.checksum()
 }
